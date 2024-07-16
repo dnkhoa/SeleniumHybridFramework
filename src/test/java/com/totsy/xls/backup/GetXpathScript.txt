@@ -1,0 +1,105 @@
+var name = 'xxx';
+var elements = document.querySelectorAll('input,select,textarea,a,span,td,div')
+var myList = new Array();
+for (var i = 0; i < elements.length; i++) {
+	var xpath = "";
+    if (elements[i] && elements[i].id) {
+		if (elements[i].type != 'hidden')
+			xpath = '//*[@id=\'' + elements[i].id + '\']';
+		else
+			continue;
+	}
+    else if(elements[i] && checkElement(elements[i]) && elements[i].type != 'hidden'){
+		xpath = getElementTreeXPath(elements[i]);
+	}
+	else
+		continue;
+    var temp = elements[i].id.split('_');
+	var col1 = "";
+	if(elements[i].id){
+    if (temp.length == 1)
+    	col1 = name + '_' + temp[0];
+    else
+		col1 = name + '_' + ((temp[temp.length - 2] == 'ContentPlaceHolderBody'|| temp[temp.length - 2] == 'ctl00') ? temp[temp.length - 1] : temp[temp.length - 2] + '_' + temp[temp.length - 1]);
+    }
+	else
+		col1 = name + '_GROUP';
+		
+	var col2 = col1 + ' ' + '=' + ' ' + xpath;
+    var record = new Data(col1, col2);
+    myList.push(record);
+}
+var csvData = new Array();
+myList.forEach(function(item, index, array) {
+    csvData.push('"' + item.col1 + '","' + item.col2 + '"');
+});
+var buffer = csvData.join('\n');
+var uri = 'data:text/csv;charset=utf8,' + encodeURIComponent(buffer);
+var fileName = name + '.csv';
+var link = document.createElement('a');
+if (link.download !== undefined) {
+    link.setAttribute('href', uri);
+    link.setAttribute('download', fileName);
+} else if (navigator.msSaveBlob) {
+    link.addEventListener('click', function(event) {
+        var blob = new Blob([buffer], {
+            'type': 'text/csv;charset=utf-8;'
+        });
+        navigator.msSaveBlob(blob, fileName);
+    }, false);
+} else {
+    link.setAttribute('href', 'http://www.example.com/export');
+}
+link.innerHTML = 'Export to CSV';
+var node = document.getElementById("header")
+if (node != null)
+	node.appendChild(link);
+else
+	document.body.appendChild(link);
+
+	function Data(col1, col2) {
+    this.col1 = col1;
+    this.col2 = col2;
+}
+
+  function getElementTreeXPath(element) {
+      var paths = [];
+
+      // Use nodeName (instead of localName) so namespace prefix is included (if any).
+      for (; element && element.nodeType == 1; element = element.parentNode)  {
+          var index = 0;
+          // EXTRA TEST FOR ELEMENT.ID
+          if (element && element.id) {
+              paths.splice(0, 0, '/*[@id=\'' + element.id + '\']');
+              break;
+          }
+
+          for (var sibling = element.previousSibling; sibling; sibling = sibling.previousSibling) {
+              // Ignore document type declaration.
+              if (sibling.nodeType == Node.DOCUMENT_TYPE_NODE)
+                continue;
+
+              if (sibling.nodeName == element.nodeName)
+                  ++index;
+          }
+
+          var tagName = element.nodeName.toLowerCase();
+          var pathIndex = (index ? "[" + (index+1) + "]" : "");
+          paths.splice(0, 0, tagName + pathIndex);
+      }
+
+      return paths.length ? "/" + paths.join("/") : null;
+  };
+  
+  function checkElement(element){
+  var count = 0;
+	for(var i=0; i<element.childNodes.length;i++){
+		var child = element.childNodes[i];
+		if (child.nodeType == 1 && (child.getAttribute("type") == "radio" || child.getAttribute("type") == "checkbox" )){
+				count++;
+				if (count == 2)
+					return 1;
+         }
+	}
+	return 0;
+  }

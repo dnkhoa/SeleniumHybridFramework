@@ -1,0 +1,13 @@
+ï»¿Setup môi trý?ng Selenium:
+1. Cài ð?t Java
+2. Cài ð?t Eclipse IDE
+3. Cài ð?t Maven ( M?c C - File hý?ng d?n cài ð?t môi trý?ng ki?m th?)
+4. Import Selenium Project (SVN):
+Em ð? g?i mail invite anh vào Project Selenium, anh check mail nhé.
+Anh làm theo file hý?ng d?n sau (M?c 4 - Checkout Project t? SVN Repository) ð? get source v?:
+SVN: \\192.168.104.5\Public\990_user\KhuongNguyen\Documents\QC\Research_Selenium\Week 1 - Week 5\Khoa\Java\L?p tr?nh Java theo nhóm s? d?ng Eclipse và SVN.html
+5. C?u h?nh Selenium tích h?p Maven:
+- Add dependencies vào Maven Repository (Ð? add r?i nên b? qua bý?c này)
+- Click ph?i vào kho?ng tr?ng c?a project explorer và ch?n Refresh ð? ti?n hành download
+- Add JDK to the Project Build Path.
+- Add Maven Dependencies to the Project Build Path.
